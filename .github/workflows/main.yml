@@ -1,0 +1,12 @@
+name: Test
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Should not fail or just skip
+        if: ${{ startsWith(github.head_ref, 'release/') && endsWith(github.head_ref, '-changelog') }}
+        run: |
+          echo 'run run run'
