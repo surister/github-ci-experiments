@@ -1,0 +1,29 @@
+name: Release Changelog Workflow
+
+on:
+  push:
+    branches:
+      - 'release/**'
+  pull_request:
+    branches:
+      - 'release/**'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: General step
+        run: echo "Running on branch ${{ github.ref_name }}"
+
+      - name: Changelog-only step
+        if: ${{ startsWith(github.ref_name, 'release/') && endsWith(github.ref_name, '-changelog') }}
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          # Validate branch matches exactly release/x.x.x-changelog
+          if [[ "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+-changelog$ ]]; then
+            echo "Branch '$BRANCH' matches release/x.x.x-changelog pattern. Running changelog step."
+          else
+            echo "Branch '$BRANCH' does not match the required release/x.x.x-changelog pattern. Skipping."
+            exit 1
+          fi
